@@ -53,7 +53,7 @@ func (h *UserHandler) Update(newUser *model.User) error {
 	}).Error
 }
 
-func (h *UserHandler) FindUserEmail(name string) (model.User, error) {
+func (h *UserHandler) FindUserInfo(name string) (model.User, error) {
 	var user model.User
 	err := h.db.Where("name = ?", name).Find(&user).Error
 	return user, err

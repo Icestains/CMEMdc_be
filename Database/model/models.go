@@ -17,7 +17,7 @@ type User struct {
 	Password string `json:"password" binding:"required" gorm:"size:16;not null"`
 	Email    string `json:"email" gorm:"size:50;"`
 
-	Promission string
+	Permission string
 }
 
 type UserAuth struct {

@@ -27,6 +27,7 @@ func Init(host, port string, dbConn *gorm.DB) {
 		apiv1.POST("/post", handlerUserInfo.Create)
 		//apiv1.DELETE("/delete/:uid", handlerUserInfo.Delete)
 		apiv1.POST("/update", handlerUserInfo.Update)
+		apiv1.GET("/mqtt", handlerUserInfo.Mqtt)
 	}
 
 	user := apiv1.Group("")

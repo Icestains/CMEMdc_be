@@ -4,6 +4,7 @@ go 1.13
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/eclipse/paho.mqtt.golang v1.2.0
 	github.com/gin-contrib/sse v0.1.1-0.20190905051334-43f0f29dbd2b // indirect
 	github.com/gin-gonic/gin v1.5.1-0.20200316165202-73ccfea3ba5a
 	github.com/go-ini/ini v1.55.0

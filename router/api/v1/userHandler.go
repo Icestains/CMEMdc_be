@@ -33,13 +33,13 @@ func (p *User) Create(ctx *gin.Context) {
 	newUser := models.User{}
 	err := ctx.BindJSON(&newUser)
 	if err != nil {
-		panic(err)
+		log.Println(err)
 	}
 	//newUser.Email = ctx.Param("email")
 	//newUser.Name = ctx.Param("name")
 	//newUser.Password = ctx.Param("password")
 
-	newUser.Promission = "viewer"
+	newUser.Permission = "viewer"
 
 	//查询用户名是否注册
 	if hasName, _ := p.service.User.FindUserByName(newUser.Name, ""); hasName {
@@ -55,7 +55,7 @@ func (p *User) Create(ctx *gin.Context) {
 
 	err = p.service.User.Create(&newUser)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
 		return
 	}
 	fmt.Println("newId: ------ ", newUser)
@@ -186,7 +186,7 @@ func (u *User) GetUserInfo(ctx *gin.Context) {
 	claims := ctx.MustGet("claims").(*myjwt.CustomClaims)
 	fmt.Println("claims", claims)
 	if claims != nil {
-		user, err := u.service.User.FindUserEmail(claims.Name)
+		user, err := u.service.User.FindUserInfo(claims.Name)
 		if err != nil {
 			code = e.INVALID_PARAMS
 		} else {
@@ -197,7 +197,7 @@ func (u *User) GetUserInfo(ctx *gin.Context) {
 				"data": gin.H{
 					"name":       user.Name,
 					"email":      user.Email,
-					"promission": user.Promission,
+					"permission": user.Permission,
 				},
 			})
 			return
