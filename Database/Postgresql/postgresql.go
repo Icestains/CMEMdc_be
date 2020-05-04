@@ -35,13 +35,6 @@ func InitDatabase(db *gorm.DB) error {
 	if err := db.AutoMigrate(models...).Error; err != nil {
 		return err
 	}
-	// Personal info
-	//if err := db.Model(&models.PersonalInfo{}).AddForeignKey("account_id", fmt.Sprintf("%s(id)", models.AccountTableName), "CASCADE", "CASCADE").Error; err != nil {
-	//	return err
-	//} // Subcategories
-	//if err := db.Model(&models.Subcategory{}).AddForeignKey("category_id", fmt.Sprintf("%s(id)", models.CategoryTableName), "CASCADE", "CASCADE").Error; err != nil {
-	//	return err
-	//}
 
 	return nil
 

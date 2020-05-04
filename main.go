@@ -5,6 +5,7 @@ import (
 	_ "CMEMdc_be/Database/Postgresql"
 	"CMEMdc_be/config"
 	"CMEMdc_be/router"
+	"CMEMdc_be/utils/mqtt"
 )
 
 func main() {
@@ -19,6 +20,8 @@ func main() {
 	}
 	//关闭数据库
 	defer dbConn.Close()
+
+	mqtt.TestMqtt()
 
 	//初始化路由
 	router.Init(cfg.AppHost, cfg.AppPort, dbConn)

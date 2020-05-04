@@ -3,7 +3,6 @@ package v1
 import (
 	"CMEMdc_be/Database"
 	models "CMEMdc_be/Database/model"
-	"CMEMdc_be/utils/mqtt"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
@@ -109,23 +108,3 @@ func (p *UserInfo) Update(c *gin.Context) {
 	})
 }
 
-func (p *UserInfo) Mqtt(c *gin.Context) {
-	//newUser := models.Userinfo{}
-	//err := c.BindJSON(&newUser)
-	//if err != nil {
-	//	panic(err)
-	//}
-	//fmt.Println(
-	//	c.Params,
-	//	newUser,
-	//)
-	//p.service.Userinfo.Update(&newUser)c
-	mqtt.TestMqtt(c)
-	//c.JSON(http.StatusOK, gin.H{
-	//	"code": 20000,
-	//	"msg":  "update success",
-	//	"data": gin.H{
-	//		"MqttTime":time.Now(),
-	//	},
-	//})
-}

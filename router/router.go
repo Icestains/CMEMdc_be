@@ -21,13 +21,14 @@ func Init(host, port string, dbConn *gorm.DB) {
 	//r.Use(RequestInfos())
 	handlerUserInfo := v1.NewUserinfoHandler(dbConn)
 	handlerUser := v1.NewUserHandler(dbConn)
+	handlerEmqxJS := v1.NewEmqxJSHandler(dbConn)
 	apiv1 := r.Group("/v1")
 	{
 		apiv1.GET("/get", handlerUserInfo.Fetch)
 		apiv1.POST("/post", handlerUserInfo.Create)
 		//apiv1.DELETE("/delete/:uid", handlerUserInfo.Delete)
 		apiv1.POST("/update", handlerUserInfo.Update)
-		apiv1.GET("/mqtt", handlerUserInfo.Mqtt)
+		//apiv1.GET("/mqtt", handlerUserInfo.Mqtt)
 	}
 
 	user := apiv1.Group("")
@@ -45,13 +46,18 @@ func Init(host, port string, dbConn *gorm.DB) {
 		userAuth.GET("/info", handlerUser.GetUserInfo)
 	}
 
+	emqxdata := apiv1.Group("")
+	{
+		//user.POST("/register", handlerUser.Create)
+		emqxdata.GET("/emqx", handlerEmqxJS.Fetch)
+	}
+
 	//定义默认路由404
 	r.NoRoute(handleNotFound)
 
 	fmt.Println("host======" + host)
 	r.Run(host + ":" + port)
 }
-
 
 func handleNotFound(c *gin.Context) {
 	c.JSON(http.StatusNotFound, gin.H{
