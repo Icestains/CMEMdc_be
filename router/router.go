@@ -1,6 +1,7 @@
 package router
 
 import (
+	_ "CMEMdc_be/docs"
 	"CMEMdc_be/router/Middlewares"
 	myjwt "CMEMdc_be/router/Middlewares/jwt"
 	v1 "CMEMdc_be/router/api/v1"
@@ -9,6 +10,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	_ "github.com/lib/pq"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
 	"net/http"
 )
 
@@ -17,6 +20,7 @@ func Init(host, port string, dbConn *gorm.DB) {
 
 	r := gin.Default()
 	r.Use(Middlewares.Cors())
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 	fmt.Println("--------------------------------")
 	//r.Use(RequestInfos())
 	handlerUserInfo := v1.NewUserinfoHandler(dbConn)

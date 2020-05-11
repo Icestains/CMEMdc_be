@@ -31,6 +31,10 @@ type Res struct {
 }
 
 // Fetch all post data
+// @Summary 查找所有用户信息
+// @Produce  json
+// @Success 200 {object} app.Response
+// @Router /v1/get [get]
 func (p *UserInfo) Fetch(ctx *gin.Context) {
 	payload, _ := p.service.Userinfo.FindAll()
 	//res := Res{
