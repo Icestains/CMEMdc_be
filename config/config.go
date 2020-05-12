@@ -27,7 +27,7 @@ type DatabaseConfig struct {
 var _cfg *Config = nil
 
 func GetConfig() *Config {
-	_cfg, err := ParseConfig("./config/app.json")
+	_cfg, err := ParseConfig("/Users/lichi/go/src/github.com/icestains/CMEMdc_be/config/app.json")
 	if err != nil {
 		log.Fatal(err)
 		panic(err)
