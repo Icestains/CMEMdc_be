@@ -5,12 +5,60 @@
         "license": {}
     },
     "paths": {
-        "/v1/get": {
+        "/auth": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "用户登录",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/register": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "用户注册账号",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/emqx": {
             "get": {
                 "produces": [
                     "application/json"
                 ],
-                "summary": "查找所有用户信息",
+                "summary": "查询所有 emqx 数据信息",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/user/info": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "查询用户信息",
                 "responses": {
                     "200": {
                         "description": "OK",

@@ -4,12 +4,13 @@ go 1.13
 
 require (
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
+	github.com/astaxie/beego v1.12.1
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/eclipse/paho.mqtt.golang v1.2.0
 	github.com/gin-contrib/sse v0.1.1-0.20190905051334-43f0f29dbd2b // indirect
 	github.com/gin-gonic/gin v1.6.3
-	github.com/go-ini/ini v1.55.0
+	github.com/go-ini/ini v1.56.0
 	github.com/go-openapi/spec v0.19.7 // indirect
 	github.com/go-openapi/swag v0.19.9 // indirect
 	github.com/golang/protobuf v1.4.1 // indirect

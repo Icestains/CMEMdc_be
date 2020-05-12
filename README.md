@@ -8,3 +8,19 @@
 
 ### require
 - postgresql
+
+
+---
+### 项目架构重构
+```
+gin-blog/
+├── config //配置文件
+├── middleware //应用中间件
+├── models // 数据模型
+├── utils // 应用包
+├── router // 路由
+└── runtime // 应用运行时数据
+└── docs // swagger文件
+└── static // 静态文件
+
+```

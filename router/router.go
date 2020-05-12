@@ -1,66 +1,55 @@
 package router
 
 import (
-	_ "CMEMdc_be/docs"
-	"CMEMdc_be/router/Middlewares"
-	myjwt "CMEMdc_be/router/Middlewares/jwt"
-	v1 "CMEMdc_be/router/api/v1"
-	"fmt"
-	_ "fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
-	_ "github.com/lib/pq"
 	ginSwagger "github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+	_ "github.com/lib/pq"
+
+	_ "CMEMdc_be/docs"
+	"CMEMdc_be/middleware/cors"
+	"CMEMdc_be/middleware/jwt"
+	"CMEMdc_be/router/api"
+	"CMEMdc_be/router/api/v1"
+	"CMEMdc_be/utils/setting"
 )
 
-func Init(host, port string, dbConn *gorm.DB) {
-	//CONN = db
+func InitRouter() *gin.Engine {
+	r := gin.New()
 
-	r := gin.Default()
-	r.Use(Middlewares.Cors())
-	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	fmt.Println("--------------------------------")
-	//r.Use(RequestInfos())
-	handlerUserInfo := v1.NewUserinfoHandler(dbConn)
-	handlerUser := v1.NewUserHandler(dbConn)
-	handlerEmqxJS := v1.NewEmqxJSHandler(dbConn)
+	r.Use(gin.Logger())
+
+	r.Use(gin.Recovery())
+
+	r.Use(cors.Cors())
+		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	gin.SetMode(setting.RunMode)
+
+	r.POST("/auth", api.GetAuth)
+	r.POST("/register", v1.Create)
+
 	apiv1 := r.Group("/v1")
+	apiv1.Use(jwt.JWT())
 	{
-		apiv1.GET("/get", handlerUserInfo.Fetch)
-		apiv1.POST("/post", handlerUserInfo.Create)
-		//apiv1.DELETE("/delete/:uid", handlerUserInfo.Delete)
-		apiv1.POST("/update", handlerUserInfo.Update)
-		//apiv1.GET("/mqtt", handlerUserInfo.Mqtt)
+		apiv1.GET("/emqx", v1.FindAllEmqxData)
 	}
 
-	user := apiv1.Group("")
+	user := apiv1.Group("user")
 	{
-		//user.POST("/register", handlerUser.Create)
-		user.POST("/login", handlerUser.Login)
-		user.POST("/sign-up", handlerUser.Create)
-		user.POST("/logout", handlerUser.Logout)
-		user.DELETE("/delete/:id", handlerUser.Delete)
-	}
-
-	userAuth := user.Group("/user", myjwt.JWTAuth())
-	{
-		userAuth.GET("/data", handlerUser.GetName)
-		userAuth.GET("/info", handlerUser.GetUserInfo)
-	}
-
-	emqxdata := apiv1.Group("")
-	{
-		//user.POST("/register", handlerUser.Create)
-		emqxdata.GET("/emqx", handlerEmqxJS.Fetch)
+		//user.POST("/login", v1.Login)
+		//user.POST("/sign-up", handlerUser.Create)
+		//user.POST("/logout", handlerUser.Logout)
+		//user.DELETE("/delete/:id", handlerUser.Delete)
+		user.GET("/info", v1.GetUserInfo)
 	}
 
 	//定义默认路由404
 	r.NoRoute(handleNotFound)
 
-	fmt.Println("host======" + host)
-	r.Run(host + ":" + port)
+	return r
 }
 
 func handleNotFound(c *gin.Context) {

@@ -1,28 +1,25 @@
 package main
 
 import (
-	"CMEMdc_be/Database/Postgresql"
-	_ "CMEMdc_be/Database/Postgresql"
-	"CMEMdc_be/config"
+	"fmt"
+	"net/http"
+
 	"CMEMdc_be/router"
-	"CMEMdc_be/utils/mqtt"
+	"CMEMdc_be/utils/setting"
 )
 
 func main() {
 
-	//加载配置信息
-	cfg := config.GetConfig()
+	router := router.InitRouter()
 
-	//建立数据库链接
-	dbConn, err := Postgresql.NewDatabase(&cfg.Database)
-	if err != nil {
-		panic(err.Error())
+	s := &http.Server{
+		Addr:           fmt.Sprintf(":%d", setting.HTTPPort),
+		Handler:        router,
+		ReadTimeout:    setting.ReadTimeout,
+		WriteTimeout:   setting.WriteTimeout,
+		MaxHeaderBytes: 1 << 20,
 	}
-	//关闭数据库
-	defer dbConn.Close()
 
-	mqtt.TestMqtt()
+	s.ListenAndServe()
 
-	//初始化路由
-	router.Init(cfg.AppHost, cfg.AppPort, dbConn)
 }

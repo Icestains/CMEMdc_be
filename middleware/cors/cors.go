@@ -1,4 +1,4 @@
-package Middlewares
+package cors
 
 import (
 	"fmt"
@@ -7,7 +7,6 @@ import (
 	"strings"
 )
 
-//处理跨域请求
 func Cors() gin.HandlerFunc {
 	return func(context *gin.Context) {
 		method := context.Request.Method

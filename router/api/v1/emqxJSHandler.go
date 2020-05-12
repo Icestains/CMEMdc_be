@@ -1,32 +1,29 @@
 package v1
 
 import (
-	"CMEMdc_be/Database"
 	"fmt"
-	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"net/http"
+
+	"github.com/gin-gonic/gin"
+
+	"CMEMdc_be/models"
+	"CMEMdc_be/utils/e"
 )
 
-//NewPostHandler ...
-func NewEmqxJSHandler(db *gorm.DB) *EmqxJS {
-	return &EmqxJS{
-		service: Database.NewService(db),
-	}
-}
+// @Summary 查询所有 emqx 数据信息
+// @Produce  json
+// @Success 200 {object} app.Response
+// @Router /v1/emqx [get]
+func FindAllEmqxData(ctx *gin.Context) {
+	code := e.SUCCESS
 
-// Post ...
-type EmqxJS struct {
-	service Database.Service
-}
+	fmt.Println("code20000")
+	payload := models.FindAllEmqxData()
 
-// Fetch all post data
-func (p *EmqxJS) Fetch(ctx *gin.Context) {
-	payload, _ := p.service.EmqxJS.FindAll()
-	fmt.Printf("from database:========== %T",payload)
+	fmt.Printf("from database:========== %T", payload)
 	ctx.JSON(http.StatusOK, gin.H{
-		"code": 20000,
-		"res":  "success",
+		"code": code,
+		"res":  e.GetMsg(code),
 		"data": payload,
 	})
 }
