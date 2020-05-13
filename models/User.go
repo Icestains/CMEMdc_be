@@ -48,6 +48,9 @@ func FindUserByName(name, password string) (bool, error) {
 
 //注册
 func Create(regInfo *User) error {
+	if !db.HasTable(&User{}) {
+		db.CreateTable(&User{})
+	}
 	db.NewRecord(regInfo) // => 主键为空返回`true`
 	if !db.HasTable(&UserAuth{}) {
 		db.CreateTable(&UserAuth{})
@@ -78,7 +81,7 @@ func Create(regInfo *User) error {
 
 func FindUserInfo(name string) (User, error) {
 	var user User
-	//err := db.Where("name = ?", name).Find(&user).Error
-	err := db.Raw("select * from users where name = ?", name).Scan(&user).Error
+	err := db.Where("name = ?", name).Find(&user).Error
+	//err := db.Raw("select * from users where name = ?", name).Scan(&user).Error
 	return user, err
 }

@@ -1,0 +1,13 @@
+# yaml 配置
+version: '3'
+services:
+  postgres:
+    image: postgres
+    ports:
+      - "5432"
+    environment:
+      - POSTGRES_PASSWORD=0852
+  web:
+    build: .
+    ports:
+      - "8080:8080"

@@ -34,14 +34,14 @@ func InitRouter() *gin.Engine {
 	apiv1 := r.Group("/v1")
 	apiv1.Use(jwt.JWT())
 	{
-		apiv1.GET("/emqx", v1.FindAllEmqxData)
+		//apiv1.GET("/emqx", v1.FindAllEmqxData)
 	}
 
 	user := apiv1.Group("user")
 	{
 		//user.POST("/login", v1.Login)
 		//user.POST("/sign-up", handlerUser.Create)
-		//user.POST("/logout", handlerUser.Logout)
+		user.POST("/logout", v1.Logout)
 		//user.DELETE("/delete/:id", handlerUser.Delete)
 		user.GET("/info", v1.GetUserInfo)
 	}

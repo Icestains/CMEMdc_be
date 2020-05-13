@@ -1,6 +1,7 @@
 .idea/
 .DS_Store
 output/
+runtime/
 
 # Binaries for programs and plugins
 *.exe

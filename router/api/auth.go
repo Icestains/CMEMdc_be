@@ -2,7 +2,6 @@ package api
 
 import (
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/astaxie/beego/validation"
@@ -11,14 +10,15 @@ import (
 	"CMEMdc_be/models"
 	"CMEMdc_be/utils"
 	"CMEMdc_be/utils/e"
+	"CMEMdc_be/utils/logging"
 )
 
 type auth struct {
-	Name string `valid:"Required; MaxSize(50)"`
+	Name     string `valid:"Required; MaxSize(50)"`
 	Password string `valid:"Required; MaxSize(50)"`
 }
 
-// @Summary 用户登录
+// @Summary 用户登录获取 token
 // @Produce  json
 // @Success 200 {object} app.Response
 // @Router /auth [post]
@@ -29,7 +29,7 @@ func GetAuth(c *gin.Context) {
 	User := auth{}
 	err := c.ShouldBindJSON(&User)
 	if err != nil {
-		log.Println(err)
+		logging.Info(err.Error())
 	} else {
 		fmt.Println(User)
 		username := User.Name
@@ -47,16 +47,14 @@ func GetAuth(c *gin.Context) {
 					code = e.ERROR_AUTH_TOKEN
 				} else {
 					data["token"] = token
-
 					code = e.SUCCESS
 				}
-
 			} else {
-				code = e.ERROR_AUTH
+				code = e.ERROR_WRONG_PASSWORD
 			}
 		} else {
 			for _, err := range valid.Errors {
-				log.Println(err.Key, err.Message)
+				logging.Info(err.Key, err.Message)
 			}
 		}
 
