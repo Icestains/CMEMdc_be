@@ -34,7 +34,7 @@ func InitRouter() *gin.Engine {
 	apiv1 := r.Group("/v1")
 	apiv1.Use(jwt.JWT())
 	{
-		//apiv1.GET("/emqx", v1.FindAllEmqxData)
+		apiv1.GET("/emqx", v1.FindAllEmqxData)
 	}
 
 	user := apiv1.Group("user")

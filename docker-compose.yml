@@ -1,13 +1,69 @@
-# yaml 配置
 version: '3'
 services:
-  postgres:
-    image: postgres
-    ports:
-      - "5432"
-    environment:
-      - POSTGRES_PASSWORD=0852
-  web:
+  app:
+    container_name: cmem_be
     build: .
     ports:
-      - "8080:8080"
+      - 8080:8080
+    restart: on-failure
+    volumes:
+      - ~/go/src/github.com/icestains/CMEMdc_be:/usr/src/app/
+    depends_on:
+      - cmem-postgres
+    networks:
+      - cmem
+
+  mqtt:
+    image: emqx/emqx-ee
+    container_name: cmem_emqx
+    ports:
+      - 1883:1883
+      - 8083:8083
+      - 8883:8883
+      - 8084:8084
+      - 18083:18083
+    volumes:
+      - ~/emqx/etc:/opt/emqx/etc
+    depends_on:
+      - cmem-postgres
+    networks:
+      - cmem
+
+  cmem-postgres:
+    image: postgres:latest
+    container_name: cmem_db_postgres
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+      - DATABASE_HOST=${DB_HOST}
+    ports:
+      - '5432:5432'
+    volumes:
+      - ~/docker/postgresqlDB:/var/lib/postgresql/data
+    networks:
+      - cmem
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin_container
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    depends_on:
+      - cmem-postgres
+    ports:
+      - "5050:80"
+    networks:
+      - cmem
+    restart: unless-stopped
+
+volumes:
+  api:
+  database_postgres:
+
+
+# Networks to be created to facilitate communication between containers
+networks:
+  cmem:
+    driver: bridge

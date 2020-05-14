@@ -1,9 +1,10 @@
 package models
 
 import (
+	"CMEMdc_be/utils/logging"
 	"database/sql/driver"
 	"encoding/json"
-	"log"
+	"fmt"
 )
 
 type EmqxJS struct {
@@ -43,8 +44,14 @@ func (ls *EmqxPayload) Value() (driver.Value, error) {
 }
 
 func FindAllEmqxData() (res []EmqxJS) {
+	fmt.Println("code200001")
+
 	if err := db.Raw("SELECT msgid, topic, payload FROM mqtt_msg").Scan(&res).Error; err != nil {
-		log.Println(err.Error())
+		fmt.Println(res)
+		for k, v := range res {
+			fmt.Println(k, ": ", v.Payload)
+		}
+		logging.Error(err.Error())
 	}
 	return
 }
