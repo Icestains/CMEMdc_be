@@ -1,5 +1,6 @@
 version: '3'
 services:
+
   app:
     container_name: cmem_be
     build: .
@@ -7,7 +8,7 @@ services:
       - 8080:8080
     restart: on-failure
     volumes:
-      - ~/go/src/github.com/icestains/CMEMdc_be:/usr/src/app/
+      - ~/cmem/CMEMdc_be:/usr/src/app/
     depends_on:
       - cmem-postgres
     networks:
