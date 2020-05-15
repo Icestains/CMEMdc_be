@@ -44,7 +44,6 @@ func (ls *EmqxPayload) Value() (driver.Value, error) {
 }
 
 func FindAllEmqxData() (res []EmqxJS) {
-	fmt.Println("code200001")
 
 	if err := db.Raw("SELECT msgid, topic, payload FROM mqtt_msg").Scan(&res).Error; err != nil {
 		fmt.Println(res)
