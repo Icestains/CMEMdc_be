@@ -1,13 +1,14 @@
 package api
 
 import (
+	"CMEMdc_be/service/user_service"
+	"CMEMdc_be/utils/app"
 	"fmt"
 	"net/http"
 
 	"github.com/astaxie/beego/validation"
 	"github.com/gin-gonic/gin"
 
-	"CMEMdc_be/models"
 	"CMEMdc_be/utils"
 	"CMEMdc_be/utils/e"
 	"CMEMdc_be/utils/logging"
@@ -23,47 +24,50 @@ type auth struct {
 // @Success 200 {object} app.Response
 // @Router /auth [post]
 func GetAuth(c *gin.Context) {
-	code := e.INVALID_PARAMS
+	appG := app.Gin{C: c}
+	valid := validation.Validation{}
+
 	data := make(map[string]interface{})
 
 	User := auth{}
 	err := c.ShouldBindJSON(&User)
 	if err != nil {
 		logging.Info(err.Error())
-	} else {
-		fmt.Println(User)
-		username := User.Name
-		password := User.Password
+		appG.Response(http.StatusBadRequest, e.INVALID_PARAMS, nil)
+		return
+	}
 
-		valid := validation.Validation{}
-		a := auth{Name: username, Password: password}
-		ok, _ := valid.Valid(&a)
+	fmt.Println(User)
+	username := User.Name
+	password := User.Password
 
-		if ok {
-			isExist := models.CheckAuth(username, password)
-			if isExist {
-				token, err := utils.GenerateToken(username, password)
-				if err != nil {
-					code = e.ERROR_AUTH_TOKEN
-				} else {
-					data["token"] = token
-					data["ver"] = "1.0"
-					code = e.SUCCESS
-				}
-			} else {
-				code = e.ERROR_WRONG_PASSWORD
-			}
-		} else {
-			for _, err := range valid.Errors {
-				logging.Info(err.Key, err.Message)
-			}
-		}
+	a := auth{Name: username, Password: password}
+	ok, _ := valid.Valid(&a)
+
+	if !ok {
+		app.MarkErrors(valid.Errors)
+		appG.Response(http.StatusBadRequest, e.INVALID_PARAMS, nil)
+		return
 
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"msg":  e.GetMsg(code),
-		"data": data,
-	})
+	userService := user_service.Auth{Username: username, Password: password}
+	isExist, err := userService.CheckAuth()
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR, err.Error())
+		return
+	}
+	if !isExist {
+		appG.Response(http.StatusUnauthorized, e.ERROR_WRONG_PASSWORD, nil)
+		return
+	}
+	token, err := utils.GenerateToken(username, password)
+	if err != nil {
+		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_TOKEN, err.Error())
+		return
+	}
+
+	data["token"] = token
+	data["ver"] = "1.0"
+	appG.Response(http.StatusOK, e.SUCCESS, data)
 
 }

@@ -1,8 +1,8 @@
 package v1
 
 import (
+	"CMEMdc_be/utils/app"
 	"CMEMdc_be/utils/logging"
-	"fmt"
 	"net/http"
 
 	"github.com/astaxie/beego/validation"
@@ -19,51 +19,46 @@ import (
 // @Success 200 {object} app.Response
 // @Router /register [post]
 func Create(ctx *gin.Context) {
+	appG := app.Gin{ctx}
+
 	//绑定数据
 	newUser := models.User{}
 	err := ctx.BindJSON(&newUser)
 	if err != nil {
 		logging.Info(err)
+		appG.Response(http.StatusOK, e.INVALID_PARAMS, err.Error())
 	}
-	//newUser.Email = ctx.Param("email")
-	//newUser.Name = ctx.Param("name")
-	//newUser.Password = ctx.Param("password")
 
 	newUser.Permission = "viewer"
 	valid := validation.Validation{}
-	//valid.Min(tagId, 1, "tag_id").Message("标签ID必须大于0")
 	valid.Required(newUser.Name, "name").Message("用户名不能为空")
 	valid.Required(newUser.Password, "password").Message("密码不能为空")
 	valid.Required(newUser.Email, "email").Message("邮箱不能为空")
-	//valid.Required(createdBy, "created_by").Message("创建人不能为空")
-	//valid.Range(state, 0, 1, "state").Message("状态只允许0或1")
 
-	code := e.INVALID_PARAMS
-	if ! valid.HasErrors() {
-		if hasName, _ := models.FindUserByName(newUser.Name, ""); !hasName {
-			err = models.Create(&newUser)
-			if err != nil {
-				logging.Info(err)
-			}
-			code = e.SUCCESS
-		} else {
-			code = e.ERROR_EXIST_USER
-		}
-	} else {
-		for _, err := range valid.Errors {
-			logging.Info("err.key: %s, err.message: %s", err.Key, err.Message)
-		}
+	if valid.HasErrors() {
+		app.MarkErrors(valid.Errors)
+		appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
+		return
 	}
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"msg":  e.GetMsg(code),
-		"data": gin.H{
-			"name": newUser.Name,
-			"ID":   newUser.ID,
-			"err":  err,
-		},
-	})
+	hasName, err := models.FindUserByName(newUser.Name, "")
+	if err != nil {
+		appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
+		return
+	}
+	if hasName {
+		appG.Response(http.StatusOK, e.ERROR_EXIST_USER, nil)
+		return
+	}
+
+	err = models.Create(&newUser)
+	if err != nil {
+		logging.Info(err)
+		appG.Response(http.StatusOK, e.ERROR, nil)
+		return
+	}
+
+	appG.Response(http.StatusOK, e.SUCCESS, nil)
 }
 
 //
@@ -158,14 +153,12 @@ func Create(ctx *gin.Context) {
 // @Success 200 {object} app.Response
 // @Router /v1/user/logout [post]
 func Logout(c *gin.Context) {
-	code := e.SUCCESS
-	c.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"msg":  e.GetMsg(code),
-		"data": gin.H{},
-	})
-}
 
+	appG := app.Gin{c}
+
+	appG.Response(http.StatusOK, e.SUCCESS, nil)
+
+}
 
 //func (u *User) GetName(ctx *gin.Context) {
 //	claims := ctx.MustGet("claims").(*myjwt.CustomClaims)
@@ -188,7 +181,9 @@ func Logout(c *gin.Context) {
 // @Success 200 {object} app.Response
 // @Router /v1/user/info [get]
 func GetUserInfo(c *gin.Context) {
-	code := e.INVALID_PARAMS
+
+	appG := app.Gin{c}
+
 	data := make(map[string]interface{})
 	user := models.User{}
 
@@ -196,25 +191,22 @@ func GetUserInfo(c *gin.Context) {
 
 	if err != nil {
 		logging.Info(err.Error())
-		code = e.ERROR_AUTH_CHECK_TOKEN_FAIL
-	} else {
-		user, err = models.FindUserInfo(claims.Username)
-		if err != nil {
-			code = e.INVALID_PARAMS
-			fmt.Println("err==========", err.Error())
-			logging.Info(err.Error())
-			data["error"] = err.Error()
-		} else {
-			code = e.SUCCESS
-			data["name"] = user.Name
-			data["email"] = user.Email
-			data["permission"] = user.Permission
-		}
+		appG.Response(http.StatusOK, e.ERROR_AUTH_CHECK_TOKEN_FAIL, nil)
+		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"msg":  e.GetMsg(code),
-		"data": data,
-	})
+	user, err = models.FindUserInfo(claims.Username)
+	if err != nil {
+		data["error"] = err.Error()
+		appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
+		logging.Info(err.Error())
+		return
+	}
+
+	data["name"] = user.Name
+	data["email"] = user.Email
+	data["permission"] = user.Permission
+
+	appG.Response(http.StatusOK, e.SUCCESS, data)
+
 }

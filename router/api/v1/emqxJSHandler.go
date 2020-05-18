@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"CMEMdc_be/utils/app"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -13,14 +14,11 @@ import (
 // @Produce  json
 // @Success 200 {object} app.Response
 // @Router /v1/emqx [get]
-func FindAllEmqxData(ctx *gin.Context) {
-	code := e.SUCCESS
+func FindAllEmqxData(c *gin.Context) {
+	appG := app.Gin{C: c}
 
 	payload := models.FindAllEmqxData()
 
-	ctx.JSON(http.StatusOK, gin.H{
-		"code": code,
-		"res":  e.GetMsg(code),
-		"data": payload,
-	})
+	appG.Response(http.StatusOK, e.SUCCESS, payload)
+
 }
