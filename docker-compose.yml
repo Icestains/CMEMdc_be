@@ -59,6 +59,9 @@ services:
       - cmem
     restart: unless-stopped
 
+  app-fe:
+    image
+
 volumes:
   api:
   database_postgres:

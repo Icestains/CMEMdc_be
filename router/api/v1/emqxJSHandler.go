@@ -20,5 +20,12 @@ func FindAllEmqxData(c *gin.Context) {
 	payload := models.FindAllEmqxData()
 
 	appG.Response(http.StatusOK, e.SUCCESS, payload)
+}
 
+func FindAllEmqxClientInfo(c *gin.Context)  {
+	appG := app.Gin{C: c}
+
+	payload := models.FindAllEmqxClients()
+
+	appG.Response(http.StatusOK, e.SUCCESS, payload)
 }

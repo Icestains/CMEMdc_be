@@ -29,7 +29,7 @@ func Create(ctx *gin.Context) {
 		appG.Response(http.StatusOK, e.INVALID_PARAMS, err.Error())
 	}
 
-	newUser.Permission = "viewer"
+	newUser.Permission = "admin"
 	valid := validation.Validation{}
 	valid.Required(newUser.Name, "name").Message("用户名不能为空")
 	valid.Required(newUser.Password, "password").Message("密码不能为空")
@@ -41,12 +41,14 @@ func Create(ctx *gin.Context) {
 		return
 	}
 
-	hasName, err := models.FindUserByName(newUser.Name, "")
-	if err != nil {
-		appG.Response(http.StatusOK, e.INVALID_PARAMS, nil)
-		return
-	}
+	hasName, _ := models.FindUserByName(newUser.Name, "")
+	//if err != nil {
+	//	logging.Info(err)
+	//	appG.Response(http.StatusOK, e.INVALID_PARAMS, err.Error())
+	//	return
+	//}
 	if hasName {
+		logging.Info(err)
 		appG.Response(http.StatusOK, e.ERROR_EXIST_USER, nil)
 		return
 	}
@@ -54,7 +56,7 @@ func Create(ctx *gin.Context) {
 	err = models.Create(&newUser)
 	if err != nil {
 		logging.Info(err)
-		appG.Response(http.StatusOK, e.ERROR, nil)
+		appG.Response(http.StatusOK, e.ERROR, err.Error())
 		return
 	}
 

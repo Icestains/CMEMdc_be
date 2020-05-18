@@ -4,7 +4,6 @@ import (
 	"CMEMdc_be/utils/logging"
 	"database/sql/driver"
 	"encoding/json"
-	"fmt"
 )
 
 type EmqxJS struct {
@@ -46,10 +45,6 @@ func (ls *EmqxPayload) Value() (driver.Value, error) {
 func FindAllEmqxData() (res []EmqxJS) {
 
 	if err := db.Raw("SELECT msgid, topic, payload FROM mqtt_msg").Scan(&res).Error; err != nil {
-		fmt.Println(res)
-		for k, v := range res {
-			fmt.Println(k, ": ", v.Payload)
-		}
 		logging.Error(err.Error())
 	}
 	return

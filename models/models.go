@@ -36,7 +36,7 @@ func Setup() {
 		log.Println(err)
 	}
 
-	//db.SingularTable(true)
+	db.SingularTable(true)
 	db.DB().SetMaxIdleConns(10)
 	db.DB().SetMaxOpenConns(100)
 
