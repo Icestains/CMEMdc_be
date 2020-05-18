@@ -60,7 +60,14 @@ services:
     restart: unless-stopped
 
   app-fe:
-    image
+    image: nginx
+    container_name: cmem_fe
+    ports:
+      - 8000:80
+    volumes:
+      - ~/cmem/CMEMdc_fe/dist:/usr/share/nginx/html/
+    networks:
+      - cmem
 
 volumes:
   api:
