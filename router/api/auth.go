@@ -47,6 +47,7 @@ func GetAuth(c *gin.Context) {
 					code = e.ERROR_AUTH_TOKEN
 				} else {
 					data["token"] = token
+					data["ver"] = "1.0"
 					code = e.SUCCESS
 				}
 			} else {

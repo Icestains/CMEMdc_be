@@ -24,9 +24,9 @@ func InitRouter() *gin.Engine {
 	r.Use(gin.Recovery())
 
 	r.Use(cors.Cors())
-		r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	gin.SetMode(setting.RunMode)
+	gin.SetMode(setting.ServerSetting.RunMode)
 
 	r.POST("/auth", api.GetAuth)
 	r.POST("/register", v1.Create)

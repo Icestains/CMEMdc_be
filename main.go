@@ -9,19 +9,27 @@ import (
 	"os/signal"
 	"time"
 
+	"CMEMdc_be/models"
 	"CMEMdc_be/router"
+	"CMEMdc_be/utils/logging"
 	"CMEMdc_be/utils/setting"
 )
+
+func init() {
+	setting.Setup()
+	models.Setup()
+	logging.Setup()
+}
 
 func main() {
 
 	router := router.InitRouter()
 
 	s := &http.Server{
-		Addr:           fmt.Sprintf(":%d", setting.HTTPPort),
+		Addr:           fmt.Sprintf(":%d", setting.ServerSetting.HttpPort),
 		Handler:        router,
-		ReadTimeout:    setting.ReadTimeout,
-		WriteTimeout:   setting.WriteTimeout,
+		ReadTimeout:    setting.ServerSetting.ReadTimeout,
+		WriteTimeout:   setting.ServerSetting.WriteTimeout,
 		MaxHeaderBytes: 1 << 20,
 	}
 

@@ -1,7 +1,6 @@
 package models
 
 import (
-	"CMEMdc_be/utils/logging"
 	"fmt"
 	"log"
 
@@ -20,33 +19,18 @@ type Model struct {
 	ModifiedOn int `json:"modified_on"`
 }
 
-func init() {
+func Setup() {
 	var (
-		err                                        error
-		dbType, dbName, user, password, host, port string
+		err error
 	)
 
-	sec, err := setting.Cfg.GetSection("database")
-	if err != nil {
-		logging.Fatal(2, "Fail to get section 'database': %v", err)
-	}
-
-	dbType = sec.Key("TYPE").String()
-	dbName = sec.Key("NAME").String()
-	user = sec.Key("USER").String()
-	password = sec.Key("PASSWORD").String()
-	host = sec.Key("HOST").String()
-	port = sec.Key("PORT").String()
-
-	//dbSource := "host=" + sec.Host + " port=" + sec.Port + " user=" + user + " password=" + password + " dbname=" + dbName + " sslmode=disable"
-	//connStr := "postgres://postgres:0852@postgresql/5434?sslmode=disable"
 	connStr := fmt.Sprintf("postgresql://%v:%v@%v:%v/%v?sslmode=disable",
-		user,
-		password,
-		host,
-		port,
-		dbName)
-	db, err = gorm.Open(dbType, connStr)
+		setting.DatabaseSetting.User,
+		setting.DatabaseSetting.Password,
+		setting.DatabaseSetting.Host,
+		setting.DatabaseSetting.Port,
+		setting.DatabaseSetting.DbName)
+	db, err = gorm.Open(setting.DatabaseSetting.Type, connStr)
 
 	if err != nil {
 		log.Println(err)
