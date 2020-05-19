@@ -1,12 +1,12 @@
 package v1
 
 import (
-	"CMEMdc_be/utils/app"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 
 	"CMEMdc_be/models"
+	"CMEMdc_be/utils/app"
 	"CMEMdc_be/utils/e"
 )
 
@@ -22,7 +22,7 @@ func FindAllEmqxData(c *gin.Context) {
 	appG.Response(http.StatusOK, e.SUCCESS, payload)
 }
 
-func FindAllEmqxClientInfo(c *gin.Context)  {
+func FindAllEmqxClientInfo(c *gin.Context) {
 	appG := app.Gin{C: c}
 
 	payload := models.FindAllEmqxClients()

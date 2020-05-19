@@ -1,7 +1,6 @@
 package jwt
 
 import (
-	"fmt"
 	"net/http"
 	"time"
 
@@ -17,10 +16,10 @@ func JWT() gin.HandlerFunc {
 		var data interface{}
 
 		code = e.SUCCESS
-		fmt.Println("---header/--- \r\n")
-		for k,v :=range c.Request.Header {
-			fmt.Println(k,v)
-		}
+		//fmt.Println("---header/--- \r\n")
+		//for k,v :=range c.Request.Header {
+		//	fmt.Println(k,v)
+		//}
 		token := c.Request.Header["Token"][0]
 		if token == "" {
 			code = e.INVALID_PARAMS

@@ -26,7 +26,8 @@ func (ls *EmqxPayload) Scan(value interface{}) error {
 		return nil
 	}
 	t := EmqxPayload{}
-	if e := json.Unmarshal(value.([]byte), &t); e != nil {
+	//string 不能默认看成 []byte ，只好先声明成 string 再转化成 json了。。。
+	if e := json.Unmarshal([]byte(value.(string)), &t); e != nil {
 		return e
 	}
 	*ls = t
@@ -44,7 +45,8 @@ func (ls *EmqxPayload) Value() (driver.Value, error) {
 
 func FindAllEmqxData() (res []EmqxJS) {
 
-	if err := db.Raw("SELECT msgid, topic, payload FROM mqtt_msg").Scan(&res).Error; err != nil {
+	err := db.Raw("SELECT msgid, topic, payload FROM mqtt_msg").Scan(&res).Error
+	if err != nil {
 		logging.Error(err.Error())
 	}
 	return
