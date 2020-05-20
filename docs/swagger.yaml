@@ -21,7 +21,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/app.Response'
-      summary: 用户登录
+      summary: 用户登录获取 token
   /register:
     post:
       produces:
@@ -52,4 +52,14 @@ paths:
           schema:
             $ref: '#/definitions/app.Response'
       summary: 查询用户信息
+  /v1/user/logout:
+    post:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.Response'
+      summary: 退出登录
 swagger: "2.0"

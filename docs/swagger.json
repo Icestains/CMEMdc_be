@@ -10,7 +10,7 @@
                 "produces": [
                     "application/json"
                 ],
-                "summary": "用户登录",
+                "summary": "用户登录获取 token",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -59,6 +59,22 @@
                     "application/json"
                 ],
                 "summary": "查询用户信息",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/app.Response"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/user/logout": {
+            "post": {
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "退出登录",
                 "responses": {
                     "200": {
                         "description": "OK",
