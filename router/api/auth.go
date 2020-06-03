@@ -3,7 +3,6 @@ package api
 import (
 	"CMEMdc_be/service/user_service"
 	"CMEMdc_be/utils/app"
-	"fmt"
 	"net/http"
 
 	"github.com/astaxie/beego/validation"
@@ -26,9 +25,7 @@ type auth struct {
 func GetAuth(c *gin.Context) {
 	appG := app.Gin{C: c}
 	valid := validation.Validation{}
-
 	data := make(map[string]interface{})
-
 	User := auth{}
 	err := c.ShouldBindJSON(&User)
 	if err != nil {
@@ -36,19 +33,14 @@ func GetAuth(c *gin.Context) {
 		appG.Response(http.StatusBadRequest, e.INVALID_PARAMS, nil)
 		return
 	}
-
-	fmt.Println(User)
 	username := User.Name
 	password := User.Password
-
 	a := auth{Name: username, Password: password}
 	ok, _ := valid.Valid(&a)
-
 	if !ok {
 		app.MarkErrors(valid.Errors)
 		appG.Response(http.StatusBadRequest, e.INVALID_PARAMS, nil)
 		return
-
 	}
 	userService := user_service.Auth{Username: username, Password: password}
 	isExist, err := userService.CheckAuth()
@@ -65,9 +57,7 @@ func GetAuth(c *gin.Context) {
 		appG.Response(http.StatusInternalServerError, e.ERROR_AUTH_TOKEN, err.Error())
 		return
 	}
-
 	data["token"] = token
 	data["ver"] = "1.0"
 	appG.Response(http.StatusOK, e.SUCCESS, data)
-
 }

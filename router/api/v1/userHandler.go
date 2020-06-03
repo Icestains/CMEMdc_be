@@ -58,7 +58,6 @@ func Create(ctx *gin.Context) {
 	appG.Response(http.StatusOK, e.SUCCESS, nil)
 }
 
-
 // @Summary 退出登录
 // @Produce  json
 // @Success 200 {object} app.Response
@@ -71,13 +70,11 @@ func Logout(c *gin.Context) {
 
 }
 
-
 // @Summary 查询用户信息
 // @Produce  json
 // @Success 200 {object} app.Response
 // @Router /v1/user/info [get]
 func GetUserInfo(c *gin.Context) {
-
 	appG := app.Gin{c}
 
 	data := make(map[string]interface{})
@@ -104,5 +101,4 @@ func GetUserInfo(c *gin.Context) {
 	data["permission"] = user.Permission
 
 	appG.Response(http.StatusOK, e.SUCCESS, data)
-
 }

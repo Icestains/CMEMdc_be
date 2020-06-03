@@ -5,14 +5,13 @@ import (
 	"log"
 
 	"github.com/jinzhu/gorm"
-	_ "github.com/jinzhu/gorm/dialects/postgres"
-	_ "github.com/lib/pq"
 
 	"CMEMdc_be/utils/setting"
 )
 
 var db *gorm.DB
 
+// 初始化函数
 func Setup() {
 
 	connStr := fmt.Sprintf("postgresql://%v:%v@%v:%v/%v?sslmode=disable",

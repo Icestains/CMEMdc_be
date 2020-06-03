@@ -36,7 +36,7 @@ func Create(regInfo *User) error {
 	if !db.HasTable(&User{}) {
 		db.CreateTable(&User{})
 	}
-	db.NewRecord(regInfo) // => 主键为空返回`true`
+	db.NewRecord(regInfo)
 	if !db.HasTable(&UserAuth{}) {
 		db.CreateTable(&UserAuth{})
 	}
@@ -70,7 +70,7 @@ func FindUserByName(name, password string) (bool, error) {
 	}
 }
 
-//根据用户名查找用户信息
+// 根据用户名查找用户信息
 func FindUserInfo(name string) (User, error) {
 	var user User
 	err := db.Where("name = ?", name).Find(&user).Error
@@ -84,10 +84,8 @@ func CheckAuth(username, password string) (bool, error) {
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return false, err
 	}
-
 	if auth.UserID > 0 {
 		return true, nil
 	}
-
 	return false, nil
 }
