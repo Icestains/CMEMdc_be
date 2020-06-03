@@ -36,12 +36,12 @@ func InitRouter() *gin.Engine {
 	{
 		apiv1.GET("/emqxdata", v1.FindAllEmqxData)
 		apiv1.GET("/emqxclient", v1.FindAllEmqxClientInfo)
+		apiv1.GET("/sender/:Sender", v1.FindEmqxDataBySender)
+		apiv1.GET("/topic", v1.FindEmqxDataByTopic)
 	}
 
 	user := apiv1.Group("user")
 	{
-		//user.POST("/login", v1.Login)
-		//user.POST("/sign-up", handlerUser.Create)
 		user.POST("/logout", v1.Logout)
 		//user.DELETE("/delete/:id", handlerUser.Delete)
 		user.GET("/info", v1.GetUserInfo)

@@ -4,11 +4,16 @@ import (
 	"CMEMdc_be/utils/logging"
 	"database/sql/driver"
 	"encoding/json"
+	"sort"
 )
 
-type EmqxJS struct {
+type MqttMsg struct {
+	ID      int          `json:"id"`
 	Msgid   string       `json:"msgid"`
+	Sender  string       `json:"sender"`
 	Topic   string       `json:"topic"`
+	Qos     int          `json:"qos"`
+	Retain  int          `json:"retain"`
 	Payload *EmqxPayload `json:"payload"`
 }
 
@@ -43,9 +48,32 @@ func (ls *EmqxPayload) Value() (driver.Value, error) {
 	return b, e
 }
 
-func FindAllEmqxData() (res []EmqxJS) {
+func FindAllEmqxData() (res []MqttMsg) {
 
-	err := db.Raw("SELECT msgid, topic, payload FROM mqtt_msg").Scan(&res).Error
+	err := db.Find(&res).Error
+	//err := db.Raw("SELECT msgid, topic, payload FROM mqtt_msg").Scan(&res).Error
+	if err != nil {
+		logging.Error(err.Error())
+	}
+	return
+}
+
+type MagSlice []MqttMsg
+
+func (p MagSlice) Len() int           { return len(p) }
+func (p MagSlice) Less(i, j int) bool { return p[i].ID < p[j].ID }
+func (p MagSlice) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
+
+func FindEmqxDataBySender(Sender string) (res MagSlice) {
+	err := db.Order("id desc").Limit(50).Where("sender = ?", Sender).Find(&res).Error
+	if err != nil {
+		logging.Error(err.Error())
+	}
+	sort.Sort(&res)
+	return
+}
+func FindEmqxDataByTopic(topic string) (res []MqttMsg) {
+	err := db.Limit(50).Where("topic = ?", topic).Find(&res).Error
 	if err != nil {
 		logging.Error(err.Error())
 	}

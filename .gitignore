@@ -2,6 +2,8 @@
 .DS_Store
 output/
 runtime/
+# fresh 调试工具生成目录
+tmp/
 
 # Binaries for programs and plugins
 *.exe

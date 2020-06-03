@@ -1,9 +1,10 @@
 package setting
 
 import (
-	"github.com/go-ini/ini"
 	"log"
 	"time"
+
+	"github.com/go-ini/ini"
 )
 
 type App struct {
@@ -34,13 +35,6 @@ type Database struct {
 	DbName   string
 }
 
-//type LoadSetting struct {
-//	Base
-//	APP
-//	Server
-//	Database
-//}
-
 var (
 	Cfg *ini.File
 
@@ -56,11 +50,6 @@ func Setup() {
 	Cfg, err = ini.Load("config/app.ini")
 	if err != nil {
 		log.Fatalf("Fail to parse 'config/app.ini': %v", err)
-	}
-
-	err = Cfg.Section("server").MapTo(ServerSetting)
-	if err != nil {
-		log.Fatalf("Cfg.MapTo ServerSetting err: %v", err)
 	}
 
 	mapTo("app", AppSetting)

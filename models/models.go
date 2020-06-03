@@ -13,16 +13,7 @@ import (
 
 var db *gorm.DB
 
-type Model struct {
-	ID         int `gorm:"primary_key" json:"id"`
-	CreatedOn  int `json:"created_on"`
-	ModifiedOn int `json:"modified_on"`
-}
-
 func Setup() {
-	var (
-		err error
-	)
 
 	connStr := fmt.Sprintf("postgresql://%v:%v@%v:%v/%v?sslmode=disable",
 		setting.DatabaseSetting.User,
@@ -30,8 +21,9 @@ func Setup() {
 		setting.DatabaseSetting.Host,
 		setting.DatabaseSetting.Port,
 		setting.DatabaseSetting.DbName)
-	db, err = gorm.Open(setting.DatabaseSetting.Type, connStr)
 
+	var err error
+	db, err = gorm.Open(setting.DatabaseSetting.Type, connStr)
 	if err != nil {
 		log.Println(err)
 	}

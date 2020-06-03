@@ -1,8 +1,9 @@
 package models
 
 import (
-	"CMEMdc_be/utils/logging"
 	"time"
+
+	"CMEMdc_be/utils/logging"
 )
 
 type MqttClient struct {

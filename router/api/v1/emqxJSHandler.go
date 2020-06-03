@@ -1,6 +1,7 @@
 package v1
 
 import (
+	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -29,3 +30,23 @@ func FindAllEmqxClientInfo(c *gin.Context) {
 
 	appG.Response(http.StatusOK, e.SUCCESS, payload)
 }
+
+func FindEmqxDataBySender(c *gin.Context) {
+	appG := app.Gin{C: c}
+	Sender := c.Param("Sender")
+	payload := models.FindEmqxDataBySender(Sender)
+	appG.Response(http.StatusOK, e.SUCCESS, payload)
+}
+
+func FindEmqxDataByTopic(c *gin.Context) {
+	appG := app.Gin{C: c}
+
+	topic := c.Query("topic")
+	fmt.Println(topic)
+
+	payload := models.FindEmqxDataByTopic(topic)
+
+	appG.Response(http.StatusOK, e.SUCCESS, payload)
+}
+
+
