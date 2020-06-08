@@ -80,7 +80,7 @@ func GetUserInfo(c *gin.Context) {
 	data := make(map[string]interface{})
 	user := models.User{}
 
-	claims, err := utils.ParseToken(c.Request.Header.Get("Token"))
+	claims, err := utils.ParseToken(c.Request.Header.Get("Authorization"))
 
 	if err != nil {
 		logging.Info(err.Error())
