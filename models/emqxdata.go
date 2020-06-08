@@ -65,7 +65,7 @@ func (p MagSlice) Less(i, j int) bool { return p[i].ID < p[j].ID }
 func (p MagSlice) Swap(i, j int)      { p[i], p[j] = p[j], p[i] }
 
 func FindEmqxDataBySender(Sender string) (res MagSlice) {
-	err := db.Order("id desc").Limit(50).Where("sender = ?", Sender).Find(&res).Error
+	err := db.Order("id desc").Where("sender = ?", Sender).Find(&res).Error
 	if err != nil {
 		logging.Error(err.Error())
 	}
@@ -73,7 +73,7 @@ func FindEmqxDataBySender(Sender string) (res MagSlice) {
 	return
 }
 func FindEmqxDataByTopic(topic string) (res []MqttMsg) {
-	err := db.Limit(50).Where("topic = ?", topic).Find(&res).Error
+	err := db.Where("topic = ?", topic).Find(&res).Error
 	if err != nil {
 		logging.Error(err.Error())
 	}
